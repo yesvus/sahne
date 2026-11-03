@@ -20,7 +20,7 @@ test('rejects missing title and excessively long title text', () => {
   assert.equal(titleScene.type, 'title');
   if (titleScene.type !== 'title') return;
   for (const title of ['', 'A'.repeat(90)]) {
-    const invalid = {...parsed, scenes: [{...titleScene, props: {...titleScene.props, title}}]};
+    const invalid: unknown = {...parsed, scenes: [{...titleScene, props: {...titleScene.props, title}}]};
     assert.equal(manifestSchema.safeParse(invalid).success, false);
   }
 });
