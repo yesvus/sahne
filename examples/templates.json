@@ -1,0 +1,73 @@
+{
+  "manifest": {
+    "schemaVersion": 1,
+    "scenes": [
+      {
+        "id": "introduction",
+        "type": "title",
+        "durationInFrames": 90,
+        "props": {
+          "title": "How do workers share load?",
+          "subtitle": "An illustrative demonstration, not operational measurements",
+          "eyebrow": "SAHNE / SYSTEMS",
+          "accentColor": "#4cc9f0"
+        }
+      },
+      {
+        "id": "worker-load",
+        "type": "metrics",
+        "durationInFrames": 90,
+        "props": {
+          "schemaVersion": 1,
+          "title": "Example utilization",
+          "subtitle": "Synthetic values — not real measurements",
+          "accentColor": "#4cc9f0",
+          "metrics": [
+            {
+              "label": "Worker A",
+              "value": 72
+            },
+            {
+              "label": "Worker B",
+              "value": 49
+            },
+            {
+              "label": "Worker C",
+              "value": 87
+            }
+          ]
+        }
+      },
+      {
+        "id": "highlight",
+        "type": "stat",
+        "durationInFrames": 90,
+        "props": {
+          "title": "A single metric",
+          "subtitle": "The value shown is purely illustrative",
+          "label": "Illustrative utilization",
+          "value": 72,
+          "accentColor": "#a78bfa"
+        }
+      },
+      {
+        "id": "comparison",
+        "type": "comparison",
+        "durationInFrames": 120,
+        "props": {
+          "title": "Before and after",
+          "subtitle": "Comparative figures are invented for the demonstration",
+          "accentColor": "#4cc9f0",
+          "left": {
+            "label": "Before",
+            "value": 46
+          },
+          "right": {
+            "label": "After",
+            "value": 79
+          }
+        }
+      }
+    ]
+  }
+}
