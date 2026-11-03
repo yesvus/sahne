@@ -1,14 +1,28 @@
 import React from 'react';
 import {Series} from 'remotion';
 import {manifestSchema, type TimelineManifest} from '../manifest';
+import {ComparisonScene} from './ComparisonScene';
 import {SahneDemo} from './SahneDemo';
+import {StatScene} from './StatScene';
+import {TitleScene} from './TitleScene';
 
 type Props = {manifest: TimelineManifest};
+type SceneBlock = TimelineManifest['scenes'][number];
 
-/**
- * Each Series.Sequence resets the local frame to 0 for the child scene.
- * Scenes do not overlap, so the final duration is the exact sum of frames.
- */
+const renderScene = (scene: SceneBlock): React.ReactNode => {
+  switch (scene.type) {
+    case 'metrics':
+      return <SahneDemo scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
+    case 'title':
+      return <TitleScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
+    case 'stat':
+      return <StatScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
+    case 'comparison':
+      return <ComparisonScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
+  }
+};
+
+/** Series.Sequence resets each child to local frame zero; no overlaps in v1. */
 export const SahneTimeline: React.FC<Props> = ({manifest}) => {
   const parsed = manifestSchema.parse(manifest);
 
@@ -16,7 +30,7 @@ export const SahneTimeline: React.FC<Props> = ({manifest}) => {
     <Series>
       {parsed.scenes.map((scene) => (
         <Series.Sequence key={scene.id} durationInFrames={scene.durationInFrames}>
-          <SahneDemo scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />
+          {renderScene(scene)}
         </Series.Sequence>
       ))}
     </Series>
