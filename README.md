@@ -57,3 +57,12 @@ pnpm render:timeline:smoke
 ```
 
 The full sample is six seconds and consists of two 2.5s/3.5s scenes. The smoke test renders 30 frames across the scene boundary. See [scene manifest format](docs/scene-manifest.md).
+
+## Sahne local CLI
+
+Sahne validates scene-manifest JSON before invoking Remotion. See [CLI guide](docs/cli.md).
+
+```bash
+pnpm sahne validate examples/two-scenes.json
+pnpm sahne render examples/two-scenes.json --output out/my-video.mp4
+```
