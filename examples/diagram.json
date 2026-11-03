@@ -1,0 +1,96 @@
+{
+  "manifest": {
+    "schemaVersion": 1,
+    "scenes": [
+      {
+        "id": "client-server-flow",
+        "type": "diagram",
+        "durationInFrames": 360,
+        "props": {
+          "title": "A request through a gateway",
+          "subtitle": "Illustrative client–server message flow",
+          "accentColor": "#4cc9f0",
+          "nodes": [
+            {
+              "id": "client",
+              "label": "Client",
+              "x": 0.16,
+              "y": 0.52
+            },
+            {
+              "id": "gateway",
+              "label": "Gateway",
+              "x": 0.5,
+              "y": 0.52
+            },
+            {
+              "id": "server",
+              "label": "Server",
+              "x": 0.84,
+              "y": 0.52
+            }
+          ],
+          "edges": [
+            {
+              "id": "client-gateway",
+              "from": "client",
+              "to": "gateway",
+              "label": "Link 1"
+            },
+            {
+              "id": "gateway-server",
+              "from": "gateway",
+              "to": "server",
+              "label": "Link 2"
+            }
+          ],
+          "packets": [
+            {
+              "id": "request-1",
+              "edgeId": "client-gateway",
+              "startFrame": 35,
+              "endFrame": 95
+            },
+            {
+              "id": "request-2",
+              "edgeId": "gateway-server",
+              "startFrame": 115,
+              "endFrame": 180
+            },
+            {
+              "id": "response-1",
+              "edgeId": "gateway-server",
+              "reverse": true,
+              "startFrame": 205,
+              "endFrame": 260
+            },
+            {
+              "id": "response-2",
+              "edgeId": "client-gateway",
+              "reverse": true,
+              "startFrame": 280,
+              "endFrame": 338
+            }
+          ],
+          "annotations": [
+            {
+              "startFrame": 0,
+              "endFrame": 110,
+              "text": "The client sends a request"
+            },
+            {
+              "startFrame": 110,
+              "endFrame": 200,
+              "text": "The gateway forwards the request"
+            },
+            {
+              "startFrame": 200,
+              "endFrame": 360,
+              "text": "The response returns to the client"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
