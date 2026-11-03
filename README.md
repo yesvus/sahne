@@ -57,3 +57,14 @@ pnpm render:timeline:smoke
 ```
 
 The full sample is six seconds and consists of two 2.5s/3.5s scenes. The smoke test renders 30 frames across the scene boundary. See [scene manifest format](docs/scene-manifest.md).
+
+## Template scenes
+
+Sahne supports the legacy `metrics` scene plus `title`, `stat` and `comparison` types. Try the 13-second illustrative showcase:
+
+```bash
+pnpm render:templates
+pnpm render:templates:smoke
+```
+
+See [templates](docs/templates.md) for the scene data contracts and rendering notes.
