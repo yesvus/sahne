@@ -32,3 +32,7 @@ Do not bake scene durations into global time calculations or use wall-clock time
 ## Visual primitives
 
 Use `src/design/tokens.ts` for typography, colors and 16:9 safe-area defaults; use pure functions in `src/design/motion.ts` for timing and easing. Assemble templates from `SceneCanvas`, `SceneHeader`, and `MetricBar` rather than duplicating CSS or interpolation logic. The duration passed to a scene within a `Series.Sequence` must be the **local** duration, not the total video duration. Inspect contrast and clipping at 1080p. See `docs/style-guide.md`.
+
+## Scene templates
+
+The v1 manifest schema also accepts `title`, `stat`, and `comparison` variants in addition to `metrics`. Keep every variant's props strictly validated, always pass local sequence duration, and use frame-based motion. Consult `docs/templates.md` and `examples/templates.json`. Render `pnpm render:templates:smoke` for a cross-template smoke check and inspect clips visually.

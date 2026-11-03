@@ -1,12 +1,53 @@
 import {z} from 'zod';
 import {sceneSchema} from './schema';
 
-const sceneBlockSchema = z.object({
-  id: z.string().regex(/^[a-z][a-z0-9-]{0,47}$/, 'Use lowercase identifiers with hyphens'),
-  type: z.literal('metrics'),
-  durationInFrames: z.number().int().min(1).max(1800),
-  props: sceneSchema,
+const nonemptyTitle = z.string().trim().min(1).max(72);
+const subtitle = z.string().trim().max(180);
+const accentColor = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+
+export const titlePropsSchema = z.object({
+  title: nonemptyTitle,
+  subtitle,
+  eyebrow: z.string().trim().min(1).max(40),
+  accentColor,
 }).strict();
+
+export const statPropsSchema = z.object({
+  title: nonemptyTitle,
+  subtitle,
+  label: z.string().trim().min(1).max(50),
+  value: z.number().finite().min(0).max(100),
+  accentColor,
+}).strict();
+
+const comparisonItemSchema = z.object({
+  label: z.string().trim().min(1).max(40),
+  value: z.number().finite().min(0).max(100),
+}).strict();
+
+export const comparisonPropsSchema = z.object({
+  title: nonemptyTitle,
+  subtitle,
+  accentColor,
+  left: comparisonItemSchema,
+  right: comparisonItemSchema,
+}).strict();
+
+export type TitleSceneProps = z.infer<typeof titlePropsSchema>;
+export type StatSceneProps = z.infer<typeof statPropsSchema>;
+export type ComparisonSceneProps = z.infer<typeof comparisonPropsSchema>;
+
+const sceneBaseSchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9-]{0,47}$/, 'Use lowercase identifiers with hyphens'),
+  durationInFrames: z.number().int().min(1).max(1800),
+});
+
+const sceneBlockSchema = z.discriminatedUnion('type', [
+  sceneBaseSchema.extend({type: z.literal('metrics'), props: sceneSchema}).strict(),
+  sceneBaseSchema.extend({type: z.literal('title'), props: titlePropsSchema}).strict(),
+  sceneBaseSchema.extend({type: z.literal('stat'), props: statPropsSchema}).strict(),
+  sceneBaseSchema.extend({type: z.literal('comparison'), props: comparisonPropsSchema}).strict(),
+]);
 
 export const manifestSchema = z.object({
   schemaVersion: z.literal(1),
