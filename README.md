@@ -68,3 +68,14 @@ pnpm render:templates:smoke
 ```
 
 See [templates](docs/templates.md) for the scene data contracts and rendering notes.
+
+## Technical diagram example
+
+A deterministic 12-second client → gateway → server request and response animation is available in `examples/diagram.json`:
+
+```bash
+pnpm render:diagram
+pnpm render:diagram:smoke
+```
+
+The diagram uses validated node IDs, edges, moving packets and timed step captions. See [diagram documentation](docs/diagrams.md).

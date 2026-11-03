@@ -1,6 +1,6 @@
 # Scene manifest v1
 
-A scene manifest is **data, not executable code**. It describes a deterministic Remotion composition. Sahne supports scene types `metrics`, `title`, `stat`, and `comparison`. Their props are strict discriminated schema variants. See [template guide](templates.md).
+A scene manifest is **data, not executable code**. It describes a deterministic Remotion composition. Sahne supports scene types `metrics`, `title`, `stat`, `comparison`, and `diagram`. Their props are strict discriminated schema variants. See [template guide](templates.md).
 
 ## Format
 
@@ -53,3 +53,5 @@ The output is `out/timeline-demo.mp4`. To inspect a boundary quickly, use `pnpm 
 - For incompatible changes, introduce `schemaVersion: 2` with an explicit conversion layer or a clear error; do **not** silently reinterpret v1 data.
 - Keep the old `SahneDemo` composition and its `scene` input props for backward compatibility while the new timeline evolves.
 - Content values must be sourced or explicitly described as illustrative. Sahne cannot validate factual truth automatically.
+
+The `diagram` variant validates node coordinates, graph references, packets, and half-open caption intervals. See [technical diagrams](diagrams.md).

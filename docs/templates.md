@@ -10,6 +10,7 @@ Sahne uses **deterministic, code-driven** graphics, not text-to-video diffusion.
 | `metrics` | Existing animated bar metrics (backward compatible) | `schemaVersion:1`, `title`, `subtitle`, `accentColor`, `metrics` |
 | `stat` | Highlight one 0–100% metric and its progress bar | `title`, `subtitle`, `label`, `value`, `accentColor` |
 | `comparison` | Compare two 0–100% metrics in cards | `title`, `subtitle`, `left`, `right`, `accentColor` |
+| `diagram` | SVG graph and moving packet flow | `title`, `subtitle`, `accentColor`, `nodes`, `edges`, `packets`, `annotations` |
 
 `left` and `right` each contain `{"label": "...", "value": 0..100}`.
 
@@ -36,3 +37,5 @@ Each template derives motion from `useCurrentFrame()` and the **local scene dura
 5. Render and inspect beginning, middle, final frames and scene boundaries for clipping and factual claims.
 
 The schema version remains `1` because adding a new scene type is backward compatible.
+
+See [technical diagrams](diagrams.md) for graph-specific validation, geometry and timed annotations.

@@ -2,6 +2,7 @@ import React from 'react';
 import {Series} from 'remotion';
 import type {TimelineManifest} from '../manifest';
 import {ComparisonScene} from './ComparisonScene';
+import {DiagramScene} from './DiagramScene';
 import {SahneDemo} from './SahneDemo';
 import {StatScene} from './StatScene';
 import {TitleScene} from './TitleScene';
@@ -19,6 +20,8 @@ const renderScene = (scene: SceneBlock): React.ReactNode => {
       return <StatScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
     case 'comparison':
       return <ComparisonScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
+    case 'diagram':
+      return <DiagramScene scene={scene.props} sceneDurationInFrames={scene.durationInFrames} />;
   }
 };
 

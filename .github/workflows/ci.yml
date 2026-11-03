@@ -61,6 +61,14 @@ jobs:
           pnpm render:templates:smoke 2>&1 | tee out/templates-render.log
       - name: Verify template render H.264 metadata
         run: node scripts/verify-render.mjs out/templates-smoke.mp4
+      - name: Render thirty-frame animated technical diagram
+        shell: bash
+        run: |
+          mkdir -p out
+          set -o pipefail
+          pnpm render:diagram:smoke 2>&1 | tee out/diagram-render.log
+      - name: Verify technical diagram H.264 metadata
+        run: node scripts/verify-render.mjs out/diagram-smoke.mp4
       - name: Upload debugging artifacts if validation fails
         if: failure()
         uses: actions/upload-artifact@v4
