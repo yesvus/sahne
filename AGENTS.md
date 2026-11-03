@@ -28,3 +28,7 @@ Install the official Remotion Agent Skills locally with `pnpm exec remotion skil
 Prefer a versioned JSON manifest over hand-coded one-off sequences. V1 supports ordered `metrics` scenes with explicit integer `durationInFrames` and typed scene `props`. Validate with `manifestSchema`, keep IDs unique, and use `getSceneWindows()` for half-open boundaries. See `docs/scene-manifest.md`.
 
 Do not bake scene durations into global time calculations or use wall-clock time. New scene types must be introduced through a schema variant and renderer dispatch with tests.
+
+## Local CLI
+
+Prefer `pnpm sahne validate examples/two-scenes.json` before running a render; use `pnpm sahne render <props.json> --output out/<file>.mp4` to render a validated multi-scene composition. The JSON file must contain a top-level `manifest` property (Remotion props wrapper). For fast CI smoke checks, add `--frames 0-29` (inclusive). Read `docs/cli.md` for details.
