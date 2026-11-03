@@ -36,3 +36,7 @@ Use `src/design/tokens.ts` for typography, colors and 16:9 safe-area defaults; u
 ## Scene templates
 
 The v1 manifest schema also accepts `title`, `stat`, and `comparison` variants in addition to `metrics`. Keep every variant's props strictly validated, always pass local sequence duration, and use frame-based motion. Consult `docs/templates.md` and `examples/templates.json`. Render `pnpm render:templates:smoke` for a cross-template smoke check and inspect clips visually.
+
+## Technical diagram scenes
+
+Use `type: "diagram"` for nodes, directed edges and frame-timed packet flows. Check `docs/diagrams.md` and `examples/diagram.json`. Validate all node/edge IDs and in-scene intervals with `manifestSchema`. SVG motion derives from frame index and never requires canvas state or external data. Render the diagram smoke clip and inspect labels and packet movements before requesting merge.
