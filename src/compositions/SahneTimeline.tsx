@@ -1,6 +1,6 @@
 import React from 'react';
 import {Series} from 'remotion';
-import {manifestSchema, type TimelineManifest} from '../manifest';
+import type {TimelineManifest} from '../manifest';
 import {ComparisonScene} from './ComparisonScene';
 import {SahneDemo} from './SahneDemo';
 import {StatScene} from './StatScene';
@@ -23,16 +23,12 @@ const renderScene = (scene: SceneBlock): React.ReactNode => {
 };
 
 /** Series.Sequence resets each child to local frame zero; no overlaps in v1. */
-export const SahneTimeline: React.FC<Props> = ({manifest}) => {
-  const parsed = manifestSchema.parse(manifest);
-
-  return (
-    <Series>
-      {parsed.scenes.map((scene) => (
-        <Series.Sequence key={scene.id} durationInFrames={scene.durationInFrames}>
-          {renderScene(scene)}
-        </Series.Sequence>
-      ))}
-    </Series>
-  );
-};
+export const SahneTimeline: React.FC<Props> = ({manifest}) => (
+  <Series>
+    {manifest.scenes.map((scene) => (
+      <Series.Sequence key={scene.id} durationInFrames={scene.durationInFrames}>
+        {renderScene(scene)}
+      </Series.Sequence>
+    ))}
+  </Series>
+);
