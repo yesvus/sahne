@@ -53,6 +53,14 @@ jobs:
           pnpm render:timeline:smoke 2>&1 | tee out/timeline-render.log
       - name: Verify timeline output codec and metadata
         run: node scripts/verify-render.mjs out/timeline-smoke.mp4
+      - name: Render thirty frames spanning the stat-to-comparison boundary
+        shell: bash
+        run: |
+          mkdir -p out
+          set -o pipefail
+          pnpm render:templates:smoke 2>&1 | tee out/templates-render.log
+      - name: Verify template render H.264 metadata
+        run: node scripts/verify-render.mjs out/templates-smoke.mp4
       - name: Upload debugging artifacts if validation fails
         if: failure()
         uses: actions/upload-artifact@v4
