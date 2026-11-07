@@ -26,7 +26,7 @@ cd sahne-demo
 npm exec --yes --package=hyperframes@0.9.20 -- hyperframes lint .
 npm exec --yes --package=hyperframes@0.9.20 -- hyperframes render . \
   --output renders/http-flow-draft.mp4 --fps 30 --workers 2 --quality draft
-ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,width,height,r_frame_rate \
+ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate \
   -of default=noprint_wrappers=1 renders/http-flow-draft.mp4
 ```
 
@@ -46,7 +46,7 @@ On the initial macOS test workstation (`zombie`), a custom `~/.local/bin/npm` wr
 
 - This sample is **silent** by design. An approved human voice recording is still required for the actual `script → record → transcribe → storyboard → render` pilot.
 - The [Avenox Skills](https://github.com/avenoxai/avenoxskills) production skill already provides rough-cut, transcription, MLT/FFmpeg editing and HyperFrames graphic workflows. We should integrate with its existing steps before building an editor or orchestration service.
-- In a real production, the corrected transcript from **the recorded voice after edits** is the timing source of truth, with [Sahne's storyboard validation](../../docs/narration-storyboard.md).
+- In a real production, the corrected transcript from **the recorded voice after edits** is the timing source of truth, with [Sahne's storyboard validation](../../../docs/narration-storyboard.md).
 - Store completed exports and reusable assets in private Google Drive *after* rendering; never use the Drive mount as the active media workspace.
 
 ## Open decisions
