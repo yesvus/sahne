@@ -32,6 +32,7 @@ const visualBeatSchema = z.object({
   endMs: z.number().int().positive(),
   treatment: z.enum(['overlay', 'cutaway']),
   cueText: z.string().trim().min(1).max(400),
+  cueSegmentIndex: z.number().int().nonnegative(),
   source: sourceSchema,
 }).strict();
 
@@ -91,7 +92,7 @@ export const validateNarratedStoryboard = (
 ) => {
   const storyboard = storyboardSchema.parse(storyboardInput);
   const transcript = normalizeAvenoxTranscript(avenoxTranscriptInput);
-  const lastSpokenEnd = transcript.segments.at(-1)?.endMs ?? 0;
+  const lastSpokenEnd = Math.max(...transcript.segments.map((segment) => segment.endMs));
   if (lastSpokenEnd > storyboard.durationMs) {
     throw new Error(
       'Spoken transcript ends at ' + lastSpokenEnd +
@@ -101,6 +102,20 @@ export const validateNarratedStoryboard = (
 
   const byId = new Map(assets.map((asset) => [asset.id, asset]));
   for (const beat of storyboard.beats) {
+    const segment = transcript.segments[beat.cueSegmentIndex];
+    if (!segment) {
+      throw new Error(
+        'Storyboard beat "' + beat.id + '" has invalid cueSegmentIndex ' +
+        beat.cueSegmentIndex,
+      );
+    }
+    if (beat.startMs >= segment.endMs || beat.endMs <= segment.startMs) {
+      throw new Error(
+        'Storyboard beat "' + beat.id +
+        '" does not overlap its referenced narration segment ' +
+        beat.cueSegmentIndex,
+      );
+    }
     if (beat.source.kind !== 'asset') continue;
     const asset = byId.get(beat.source.assetId);
     if (!asset) {
