@@ -45,11 +45,12 @@ jobs:
               --example blank --skip-skills --non-interactive
             cp "examples/templates/$template/index.html" "$workdir/index.html"
 
-            pnpm template:variables \
+            pnpm exec tsx scripts/template-variables.ts \
               examples/identity/channel.style.json \
               "examples/templates/$template/template.template.json" \
               "examples/templates/$template/inputs.json" \
               > "$workdir/channel-variables.json"
+            python3 -m json.tool "$workdir/channel-variables.json" >/dev/null
 
             npm exec --yes --package=hyperframes@0.9.20 -- \
               hyperframes check "$workdir"
