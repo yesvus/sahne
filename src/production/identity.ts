@@ -94,6 +94,13 @@ export const templateManifestSchema = z.object({
       message: 'Template parameter keys must be unique',
     });
   }
+  if (manifest.parameters.some((parameter) => parameter.key.startsWith('channel'))) {
+    context.addIssue({
+      code: 'custom',
+      path: ['parameters'],
+      message: 'Channel identity variables are reserved and cannot be parameters',
+    });
+  }
   if (new Set(manifest.channelStyleInputs).size !== manifest.channelStyleInputs.length) {
     context.addIssue({
       code: 'custom',
@@ -160,4 +167,69 @@ export const validateVideoProjectIdentity = (
     }
   }
   return {project, style, templates};
+};
+
+
+type TemplateVariables = Record<string, string | number | boolean>;
+
+const channelStyleVariableNames = {
+  background: 'channelBackground',
+  foreground: 'channelForeground',
+  accent: 'channelAccent',
+  displayFont: 'channelDisplayFont',
+  bodyFont: 'channelBodyFont',
+} as const;
+
+/**
+ * Resolve a template's declared public inputs with pinned channel identity
+ * tokens. Caller-supplied parameters never override channel design tokens.
+ * Pass result to HyperFrames' existing --variables-file option.
+ */
+export const resolveTemplateVariables = (
+  style: ChannelStyle,
+  template: TemplateManifest,
+  inputs: Record<string, unknown>,
+): TemplateVariables => {
+  const declared = new Map(template.parameters.map((parameter) => [
+    parameter.key, parameter,
+  ]));
+  const result: TemplateVariables = {};
+
+  for (const [key, value] of Object.entries(inputs)) {
+    const parameter = declared.get(key);
+    if (!parameter) throw new Error('Undeclared template parameter: ' + key);
+
+    const valid = parameter.kind === 'text'
+      ? typeof value === 'string' && value.trim().length > 0
+      : parameter.kind === 'number'
+        ? typeof value === 'number' && Number.isFinite(value)
+        : parameter.kind === 'boolean'
+          ? typeof value === 'boolean'
+          : parameter.kind === 'color'
+            ? typeof value === 'string' && hexColor.safeParse(value).success
+            : typeof value === 'string' && relativePath.safeParse(value).success;
+    if (!valid) throw new Error('Invalid template parameter: ' + key);
+    result[key] = value as string | number | boolean;
+  }
+
+  for (const parameter of template.parameters) {
+    if (parameter.required && !(parameter.key in inputs)) {
+      throw new Error('Missing required template parameter: ' + parameter.key);
+    }
+  }
+
+  const palette = style.visual.palette;
+  const type = style.visual.typography;
+  const tokens = {
+    background: palette.background,
+    foreground: palette.foreground,
+    accent: palette.accent,
+    displayFont: type.displayFont,
+    bodyFont: type.bodyFont,
+  };
+
+  for (const requested of template.channelStyleInputs) {
+    result[channelStyleVariableNames[requested]] = tokens[requested];
+  }
+  return result;
 };
