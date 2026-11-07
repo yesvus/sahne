@@ -8,8 +8,13 @@ const discoverSidecars = async (directory: string): Promise<string[]> => {
     const entries = await readdir(folder, {withFileTypes: true});
     entries.sort((a, b) => a.name.localeCompare(b.name));
     for (const entry of entries) {
+      // Skip OS metadata and hidden directories (e.g. macOS AppleDouble files).
+      if (entry.name.startsWith('.')) continue;
       const entryPath = join(folder, entry.name);
-      // Do not follow symlinked directories outside the requested catalog.
+      // Never traverse symlinked directories. Explicitly reject symlinked sidecars.
+      if (entry.isSymbolicLink() && entry.name.endsWith('.asset.json')) {
+        throw new Error('Symlinked asset sidecar is not supported: ' + entryPath);
+      }
       if (entry.isDirectory()) {
         await visit(entryPath);
       } else if (entry.isFile() && entry.name.endsWith('.asset.json')) {
@@ -28,9 +33,10 @@ export const loadAssetCatalog = async (directory: string): Promise<AssetRecord[]
   const ids = new Map<string, string>();
 
   for (const file of files) {
+    const contents = await readFile(file, 'utf8');
     let value: unknown;
     try {
-      value = JSON.parse(await readFile(file, 'utf8'));
+      value = JSON.parse(contents);
     } catch (error) {
       throw new Error('Invalid JSON in ' + file + ': ' + String(error));
     }
