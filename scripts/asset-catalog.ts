@@ -11,20 +11,22 @@ const main = async (): Promise<void> => {
   if (!directory || (command !== 'validate' && command !== 'search')) {
     throw new Error(usage);
   }
-  const records = await loadAssetCatalog(directory);
   if (command === 'validate') {
     if (argumentsAfterDirectory.length > 0) {
       throw new Error(usage);
     }
+    const records = await loadAssetCatalog(directory);
     console.log(JSON.stringify({valid: true, count: records.length}, null, 2));
     return;
   }
 
   const includeUnapproved = argumentsAfterDirectory.includes('--all');
   const terms = argumentsAfterDirectory.filter((arg) => arg !== '--all');
-  if (terms.length === 0 || terms.some((arg) => arg.startsWith('--'))) {
+  if (terms.length === 0 || terms.some((arg) => arg.startsWith('--')) ||
+      !/[\p{L}\p{N}]/u.test(terms.join(' '))) {
     throw new Error(usage);
   }
+  const records = await loadAssetCatalog(directory);
   const matches = searchAssets(records, terms.join(' '), {includeUnapproved});
   console.log(JSON.stringify({
     count: matches.length,
@@ -35,6 +37,8 @@ const main = async (): Promise<void> => {
 };
 
 main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  console.error(JSON.stringify({
+    error: error instanceof Error ? error.message : String(error),
+  }));
   process.exitCode = 1;
 });
