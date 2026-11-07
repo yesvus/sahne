@@ -1,6 +1,6 @@
 # HTTP request — cinematic visual revision (v2)
 
-> **Status:** revised *source* and metadata-only draft. **Real HyperFrames render and visual QA not yet verified.** The existing v1 render and files remain untouched.
+> **Status:** GitHub Actions rendered and inspected a 14.5-second H.264 1080p30 **silent** preview. The v2 asset remains **draft** pending creator approval. The original v1 archive remains untouched.
 
 ## Why this revision exists
 
@@ -36,19 +36,19 @@ ffprobe -v error \
   -of default=noprint_wrappers=1 sahne-cinematic-demo/renders/http-flow-v2.mp4
 ```
 
-Expected authored settings: **1920×1080, 30 FPS, 14.5s**, if the renderer accepts the composition. These are *targets*, not yet verified output.
+**Verified** on a GitHub-hosted Linux runner: H.264, 1920×1080, 30 FPS, 14.5 s. A path-scoped [HyperFrames preview workflow](../../../.github/workflows/hyperframes-preview.yml) also runs `hyperframes check` and uploads MP4/contact-sheet artifacts. The rendered sample is **silent**.
 
 ## Review checklist
 
-- [ ] HyperFrames lint/check **actually passes**. Address real layout/contrast/motion findings.
-- [ ] Play the MP4 and examine frames at the intro, each node arrival and outro.
+- [x] HyperFrames `check` passes with no runtime/layout/motion/contrast errors; benign example-level nesting warnings remain.
+- [x] Extracted and inspected representative frames at approximately 2.35s, 7.4s and 11.7s.
 - [ ] Confirm no tiny UI text, no accidental occlusion and enough reading time.
-- [ ] Verify 14.5s, 1080p and 30fps with ffprobe.
-- [ ] Archive the tested v2 under a **new** Drive folder / asset ID, not over the v1 render.
+- [x] Verified 14.5s, 1080p and 30fps with ffprobe in Actions and again on downloaded MP4.
+- [x] Archived tested v2 under a **new** private Drive video folder without overwriting v1.
 - [ ] User approves before `reviewStatus=approved` or automatic asset reuse.
 
 ### Deployment note
 
-At the time the source was authored, the macOS workstation `zombie` was unreachable by SSH/Tailscale from `gurbet` (its Tailscale peer was offline). This is an *environment blocker*, not a passing visual QA test. Keep the PR unmerged until the real render has been checked.
+At the time the revision began, `zombie` was unreachable from `gurbet`. A GitHub-hosted visual QA workflow provides independent reproducibility when local workstations are offline. **Do not imply this substitutes for real voice-over integration or creator editorial approval.**
 
 The original silent v1 proof can be found in [the predecessor](../http-request/README.md).
