@@ -38,7 +38,7 @@
       position:absolute;left:176px;top:487px;font-size:165px;line-height:1.07;white-space:nowrap;
     }
     #intro .highlight {
-      display:inline-block;position:relative;padding:0 18px 8px 8px;color:var(--ground);z-index:1;
+      display:inline-block;position:relative;padding:0 18px 8px 8px;color:var(--ground);z-index:1;isolation:isolate;
     }
     #intro .highlight::before {
       content:"";position:absolute;z-index:-1;left:0;right:0;top:10px;bottom:0;
@@ -147,7 +147,7 @@
 
     tl.set("#intro",{opacity:1},0);
     tl.fromTo("#intro .mark",{scaleX:0,transformOrigin:"left center"},{scaleX:1,duration:.42},.12);
-    tl.fromTo(".line-one",{opacity:0,y:55},{opacity:1,y:0,duration:.76},.32);
+    tl.fromTo(".line-one",{opacity:1,y:25},{opacity:1,y:0,duration:.76},0);
     tl.fromTo(".line-two",{opacity:0,y:65},{opacity:1,y:0,duration:.78},.69);
     tl.fromTo(".highlight",{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.73,ease:"power2.inOut"},1.45);
     tl.to("#intro",{opacity:0,duration:.52,ease:"power2.inOut"},3.12);
