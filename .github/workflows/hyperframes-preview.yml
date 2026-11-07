@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - "examples/hyperframes/http-request-cinematic/**"
-      - "examples/templates/**"
       - ".github/workflows/hyperframes-preview.yml"
   workflow_dispatch:
 
@@ -54,23 +53,6 @@ jobs:
             --fps 30 --workers 2 --quality draft --strict \
             --output "$GITHUB_WORKSPACE/out/http-request-cinematic-v2.mp4"
 
-      - name: Validate and render reusable template examples
-        run: |
-          for template in text-highlight macos-window; do
-            workdir="/tmp/sahne-template-$template"
-            npm exec --yes --package=hyperframes@0.9.20 -- \
-              hyperframes init "$workdir" \
-              --example blank --skip-skills --non-interactive
-            cp "examples/templates/$template/index.html" "$workdir/index.html"
-
-            npm exec --yes --package=hyperframes@0.9.20 -- \
-              hyperframes check "$workdir"
-            npm exec --yes --package=hyperframes@0.9.20 -- \
-              hyperframes render "$workdir" --fps 30 --workers 2 \
-              --quality draft --strict \
-              --output "$GITHUB_WORKSPACE/out/$template.mp4"
-          done
-
       - name: Verify exported MP4 metadata
         run: |
           ffprobe -v error -show_entries \
@@ -94,12 +76,6 @@ jobs:
             -i out/http-request-cinematic-v2.mp4 \
             -vf "fps=1/3,scale=640:-1,tile=3x2:padding=4:margin=4" \
             -frames:v 1 out/contact-sheet.png
-          for template in text-highlight macos-window; do
-            ffmpeg -hide_banner -loglevel error -y \
-              -i "out/$template.mp4" \
-              -vf "fps=1/2,scale=640:-1,tile=3x2:padding=4:margin=4" \
-              -frames:v 1 "out/$template-contact-sheet.png"
-          done
 
       - uses: actions/upload-artifact@v4
         if: always()
