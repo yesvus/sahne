@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
 import test from 'node:test';
 import {
   channelStyleSchema,
   templateManifestSchema,
   videoProjectSchema,
   validateVideoProjectIdentity,
+  resolveTemplateVariables,
 } from '../src/production/identity';
 
 const style = {
@@ -122,4 +124,59 @@ test('all media paths remain local relative references', () => {
   assert.equal(videoProjectSchema.safeParse({
     ...video, storyboardPath: '/etc/passwd',
   }).success, false);
+});
+
+
+test('template variables inherit brand identity but permit content overrides', () => {
+  const resolved = resolveTemplateVariables(
+    channelStyleSchema.parse(style),
+    templateManifestSchema.parse(template),
+    {headline: 'Hello', highlight: 'The idea'},
+  );
+  assert.deepEqual(resolved, {
+    headline: 'Hello',
+    highlight: 'The idea',
+    channelBackground: '#10191c',
+    channelForeground: '#f0eee6',
+    channelAccent: '#efbd73',
+    channelDisplayFont: 'Georgia',
+  });
+  assert.throws(
+    () => resolveTemplateVariables(
+      channelStyleSchema.parse(style),
+      templateManifestSchema.parse(template),
+      {headline: 'Hello', highlight: 'Idea', channelAccent: '#ff0000'},
+    ),
+    /Undeclared template parameter/,
+  );
+  assert.throws(
+    () => resolveTemplateVariables(
+      channelStyleSchema.parse(style),
+      templateManifestSchema.parse(template),
+      {headline: 'Hello'},
+    ),
+    /Missing required template parameter/,
+  );
+});
+
+test('template manifest cannot hijack reserved channel variables', () => {
+  assert.equal(templateManifestSchema.safeParse({
+    ...template,
+    parameters: [{key: 'channelAccent', kind: 'color', required: true}],
+  }).success, false);
+});
+
+test('shipped fixture exports valid HyperFrames render variables', () => {
+  const result = spawnSync(process.execPath, [
+    '--import', 'tsx', 'scripts/template-variables.ts',
+    'examples/identity/channel.style.json',
+    'examples/templates/text-highlight/template.template.json',
+    'examples/templates/text-highlight/inputs.json',
+  ], {encoding: 'utf8'});
+
+  assert.equal(result.status, 0, result.stderr);
+  const variables = JSON.parse(result.stdout) as Record<string, unknown>;
+  assert.equal(variables.channelAccent, '#efbd73');
+  assert.equal(variables.headline, 'One small click.');
+  assert.equal(variables.highlight, 'One big journey.');
 });
