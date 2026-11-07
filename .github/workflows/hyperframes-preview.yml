@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: hyperframes-preview-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   render-cinematic-spike:
     # Do not execute arbitrary HTML/JS supplied by untrusted fork PRs.
