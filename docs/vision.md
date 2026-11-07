@@ -66,3 +66,16 @@ See [production workflow](production-workflow.md) and [architecture](architectur
 4. **Local-first, tool-agnostic orchestration:** CLI/script/skills first; no mandatory hosted UI.
 5. **Separate source, metadata and bulky media:** public code is not a private production vault.
 6. **No over-engineering:** demonstrate a real bottleneck before adding databases, queues or render backends.
+
+## Commercialization hypothesis (not a commitment)
+
+**Start with a genuinely useful open-source, local-first core.** If creators repeatedly use it and request convenience, offer an optional **managed Sahne Cloud**. Paid value should initially come from hosted rendering, managed storage/catalog indexing, reliability, collaboration and convenience—not crippling essential local features.
+
+- **OSS core:** script/transcript/storyboard workflow, asset catalog and portable manifests, CLI, agent skills, integrations, local rendering and export; self-hostable/BYOK where applicable.
+- **Potential managed service:** online projects, secured storage, queued renders, managed compute, durable jobs, teams and billing. No hosted infra should be built before demand and unit economics are demonstrated.
+- **Alternative early revenue:** bespoke video-production/automation setup or integration work, before a self-serve SaaS justifies its operational cost.
+- **Competitive advantage hypothesis:** *narration-to-visual timing, editorial quality, brand consistency and reusable asset recall*, not a new video rendering engine.
+
+**Licensing remains undecided:** assess permissive OSS (Apache-2.0 or MIT) versus network copyleft (AGPL) for the **Sahne-owned code**. The repository currently has no explicit Sahne license. Open-core is an option later, not the launch default. Treat third-party dependencies separately: Remotion has proprietary, eligibility-based terms; HyperFrames is Apache-2.0; Avenox Skills lists MIT. Verify all incorporated code, skill content, fonts and media rights before publishing or monetizing. See [#13](https://github.com/yesvus/sahne/issues/13).
+
+Before deciding pricing, prove repeat usage, measure cost per produced minute, and identify which hosted conveniences users will actually pay for.
