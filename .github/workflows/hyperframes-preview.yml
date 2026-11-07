@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "examples/hyperframes/http-request-cinematic/**"
+      - "examples/templates/**"
       - ".github/workflows/hyperframes-preview.yml"
   workflow_dispatch:
 
@@ -49,6 +50,23 @@ jobs:
             --fps 30 --workers 2 --quality draft --strict \
             --output "$GITHUB_WORKSPACE/out/http-request-cinematic-v2.mp4"
 
+      - name: Validate and render reusable template examples
+        run: |
+          for template in text-highlight macos-window; do
+            workdir="/tmp/sahne-template-$template"
+            npm exec --yes --package=hyperframes@0.9.20 -- \
+              hyperframes init "$workdir" \
+              --example blank --skip-skills --non-interactive
+            cp "examples/templates/$template/index.html" "$workdir/index.html"
+
+            npm exec --yes --package=hyperframes@0.9.20 -- \
+              hyperframes check "$workdir"
+            npm exec --yes --package=hyperframes@0.9.20 -- \
+              hyperframes render "$workdir" --fps 30 --workers 2 \
+              --quality draft --strict \
+              --output "$GITHUB_WORKSPACE/out/$template.mp4"
+          done
+
       - name: Verify exported MP4 metadata
         run: |
           ffprobe -v error -show_entries \
@@ -74,8 +92,9 @@ jobs:
             -frames:v 1 out/contact-sheet.png
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: sahne-http-cinematic-v2
           path: out/
           retention-days: 14
-          if-no-files-found: error
+          if-no-files-found: warn
