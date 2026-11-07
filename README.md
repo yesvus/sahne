@@ -22,7 +22,7 @@ pnpm assets:validate "/path/to/Asset Library"
 pnpm assets:search "/path/to/Asset Library" "client server"
 ```
 
-The CLI reads `*.asset.json` sidecars and returns JSON. Search defaults to **approved assets with cleared rights**, and `--all` includes drafts for inspection. Keep private files and Drive IDs out of this public repository. See [asset catalog format and storage](docs/storage-and-assets.md).
+The CLI reads `*.asset.json` sidecars and returns JSON on success; on failure it writes a JSON `{ "error": "..." }` object to stderr and exits nonzero. Search defaults to **approved assets with cleared rights**, and `--all` includes drafts for inspection. Keep private files and Drive IDs out of this public repository. See [asset catalog format and storage](docs/storage-and-assets.md).
 
 ## Quick start
 
