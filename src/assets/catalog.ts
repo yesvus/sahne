@@ -13,6 +13,7 @@ const tagSchema = z.string().trim().toLowerCase().min(2).max(40).regex(
 const relativePathSchema = z.string().trim().min(1).max(4096).refine(
   (value) => !value.startsWith('/') &&
     !value.startsWith('\\') &&
+    !/^[a-zA-Z]:/.test(value) &&
     !value.split(/[\\/]/).includes('..'),
   'Use a relative path without parent traversal',
 );
@@ -73,7 +74,7 @@ export type AssetSearchOptions = {
 };
 
 const queryTerms = (query: string): string[] =>
-  query.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  query.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 
 /**
  * Local deterministic discovery, not a semantic/vector search engine.
@@ -85,15 +86,16 @@ export const searchAssets = (
   {includeUnapproved = false}: AssetSearchOptions = {},
 ): AssetRecord[] => {
   const terms = queryTerms(query);
+  if (terms.length === 0) return [];
   const ranked = assets.flatMap((asset) => {
     if (!includeUnapproved &&
         (asset.reviewStatus !== 'approved' || asset.rights.clearance !== 'cleared')) {
       return [];
     }
 
-    const title = asset.title.toLocaleLowerCase();
-    const description = asset.description.toLocaleLowerCase();
-    const tags = asset.tags.join(' ').toLocaleLowerCase();
+    const title = asset.title.toLowerCase();
+    const description = asset.description.toLowerCase();
+    const tags = asset.tags.join(' ').toLowerCase();
     let score = 0;
 
     for (const term of terms) {
@@ -108,10 +110,12 @@ export const searchAssets = (
     return [{asset, score}];
   });
 
+  const compareCodepoint = (a: string, b: string): number =>
+    a < b ? -1 : a > b ? 1 : 0;
   ranked.sort((left, right) =>
     right.score - left.score ||
-    left.asset.title.localeCompare(right.asset.title) ||
-    left.asset.id.localeCompare(right.asset.id),
+    compareCodepoint(left.asset.title, right.asset.title) ||
+    compareCodepoint(left.asset.id, right.asset.id),
   );
   return ranked.map(({asset}) => asset);
 };
