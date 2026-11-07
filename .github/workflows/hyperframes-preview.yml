@@ -90,6 +90,12 @@ jobs:
             -i out/http-request-cinematic-v2.mp4 \
             -vf "fps=1/3,scale=640:-1,tile=3x2:padding=4:margin=4" \
             -frames:v 1 out/contact-sheet.png
+          for template in text-highlight macos-window; do
+            ffmpeg -hide_banner -loglevel error -y \
+              -i "out/$template.mp4" \
+              -vf "fps=1/2,scale=640:-1,tile=3x2:padding=4:margin=4" \
+              -frames:v 1 "out/$template-contact-sheet.png"
+          done
 
       - uses: actions/upload-artifact@v4
         if: always()
