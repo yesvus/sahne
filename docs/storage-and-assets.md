@@ -74,7 +74,7 @@ pnpm assets:search "/path/to/Sahne Production/Asset Library" "network request" -
 ```
 
 - `validate` recursively checks schema validity and rejects duplicate stable IDs; valid empty directories report `count: 0`.
-- `search` matches all query words across title, tags and description, case-insensitively. It emits JSON for agent consumption; results are sorted by relevance. No semantic model or database is used.
+- `search` matches all query words across title, tags and description, case-insensitively. It emits JSON on success for agent consumption; errors are JSON on stderr with nonzero exit status. Blank/punctuation-only queries are rejected; results are sorted deterministically. No semantic model or database is used.
 - By default only `approved` assets with `cleared` rights are returned. `--all` is **for inspection**, not permission to reuse draft or unlicensed assets.
 - The metadata location is either `{"kind":"local","relativePath":"..."}` or a **private** Google Drive reference. Any actual Drive file ID belongs in a private sidecar, never in the public repository.
 - `editableSource` is an optional path relative to the asset's own workspace. Reference an asset by its stable `id` in future project manifests; catalog lookup should resolve that ID to its location.
