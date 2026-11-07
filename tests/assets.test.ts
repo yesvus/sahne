@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {mkdtemp, mkdir, rm, writeFile} from 'node:fs/promises';
+import {mkdtemp, mkdir, rm, symlink, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {assetSchema, searchAssets, type AssetRecord} from '../src/assets/catalog';
@@ -42,6 +42,12 @@ test('rejects unapproved rights, invalid paths and missing provenance', () => {
   }).success, false);
   assert.equal(assetSchema.safeParse({...approved, rights: undefined}).success, false);
   assert.equal(assetSchema.safeParse({...approved, unexpected: true}).success, false);
+  for (const path of ['C:/outside/asset.webm', 'D:\\\\outside.asset', '/absolute/asset.webm']) {
+    assert.equal(assetSchema.safeParse({
+      ...approved, location: {kind: 'local', relativePath: path},
+    }).success, false, path);
+    assert.equal(assetSchema.safeParse({...approved, editableSource: path}).success, false, path);
+  }
 });
 
 test('rejects duplicate tags after case normalization', () => {
@@ -62,6 +68,8 @@ test('searches multiple terms across tags, title and description without case se
     ['client-request-flow-v1'],
   );
   assert.deepEqual(searchAssets([approved, others], 'database'), []);
+  assert.deepEqual(searchAssets([approved, others], '...'), []);
+  assert.deepEqual(searchAssets([approved, others], ''), []);
 });
 
 test('search excludes drafts and uncleared assets unless explicitly requested', () => {
@@ -107,4 +115,41 @@ test('reports the source file of invalid metadata', async () => {
   } finally {
     await rm(dir, {recursive: true, force: true});
   }
+});
+
+test('ignores OS metadata and symlinked directories, but rejects linked sidecar files', async () => {
+  const catalog = await mkdtemp(join(tmpdir(), 'sahne-symlink-test-'));
+  const outside = await mkdtemp(join(tmpdir(), 'sahne-outside-'));
+  try {
+    await writeFile(join(catalog, 'good.asset.json'), JSON.stringify(approved));
+    await writeFile(join(catalog, '._appledouble.asset.json'), 'not JSON');
+    await writeFile(join(outside, 'unseen.asset.json'), JSON.stringify({
+      ...approved, id: 'outside-record',
+    }));
+    await symlink(outside, join(catalog, 'linked-directory'), 'dir');
+    assert.deepEqual((await loadAssetCatalog(catalog)).map((record) => record.id), [approved.id]);
+
+    await symlink(join(outside, 'unseen.asset.json'), join(catalog, 'linked.asset.json'), 'file');
+    await assert.rejects(loadAssetCatalog(catalog), /Symlinked asset sidecar is not supported/);
+  } finally {
+    await rm(catalog, {recursive: true, force: true});
+    await rm(outside, {recursive: true, force: true});
+  }
+});
+
+test('search tie-breakers are deterministic code-point order', () => {
+  const first = {...approved, id: 'beta-clip', title: 'beta'};
+  const second = {...approved, id: 'alpha-clip', title: 'Alpha'};
+  assert.deepEqual(
+    searchAssets([first, second], 'request').map(({id}) => id),
+    ['alpha-clip', 'beta-clip'],
+  );
+});
+
+test('ASCII search is stable when the runtime locale differs', () => {
+  const interview = {
+    ...approved, id: 'interview-clip', title: 'Interview',
+    description: 'Voice interview', tags: ['spoken'],
+  };
+  assert.deepEqual(searchAssets([interview], 'interview').map(({id}) => id), ['interview-clip']);
 });
