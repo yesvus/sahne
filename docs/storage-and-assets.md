@@ -91,3 +91,46 @@ No bespoke DAM, semantic/vector database, Drive auto-sync daemon, Google Sheets 
 ## Migration path if needed
 
 When multiple productions or multiple people make manual catalog tracking painful, move *metadata only* to a private Git repository or database. Leave binary originals in Drive or another object store. Preserve stable asset IDs so project manifests survive that migration.
+
+## Implemented local catalog CLI (v0)
+
+The first asset-discovery slice reads **private local copies** of `*.asset.json` sidecar files. It does not call the Google Drive API or upload assets. You can download/sync an `Asset Library` folder outside this public repository and point the CLI to it:
+
+```bash
+pnpm assets:validate "/path/to/Sahne Production/Asset Library"
+pnpm assets:search "/path/to/Sahne Production/Asset Library" "network request"
+pnpm assets:search "/path/to/Sahne Production/Asset Library" "network request" --all
+```
+
+- `validate` recursively checks schema validity and rejects duplicate stable IDs; valid empty directories report `count: 0`.
+- `search` matches all query words across title, tags and description, case-insensitively. It emits JSON for agent consumption; results are sorted by relevance. No semantic model or database is used.
+- By default only `approved` assets with `cleared` rights are returned. `--all` is **for inspection**, not permission to reuse draft or unlicensed assets.
+- The metadata location is either `{"kind":"local","relativePath":"..."}` or a **private** Google Drive reference. Any actual Drive file ID belongs in a private sidecar, never in the public repository.
+- `editableSource` is an optional path relative to the asset's own workspace. Reference an asset by its stable `id` in future project manifests; catalog lookup should resolve that ID to its location.
+
+Minimal metadata example (**illustrative only**, not an asset that has been produced or uploaded):
+
+```json
+{
+  "schemaVersion": 1,
+  "id": "client-request-flow-v1",
+  "title": "Client-server request flow",
+  "description": "Animated HTTP request-response explainer",
+  "category": "motion-graphic",
+  "tags": ["networking", "http", "request"],
+  "reviewStatus": "draft",
+  "rights": {
+    "origin": "original",
+    "clearance": "review-needed",
+    "license": "creator-owned"
+  },
+  "location": {
+    "kind": "local",
+    "relativePath": "client-request-flow-v1/renders/overlay.webm"
+  },
+  "aspectRatio": "16:9",
+  "durationMs": 6000
+}
+```
+
+The earlier illustrative `asset.json` sketch above is a design example; the **validated `*.asset.json` schema** in `src/assets/catalog.ts` is the implementation contract. Assets are initially tracked manually; automatic indexing, tagging and synchronization will only be added when justified by real footage reuse.
