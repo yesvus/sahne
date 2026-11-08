@@ -73,6 +73,10 @@ The samples are **metadata-only**: no human voice or downloadable sound pack is 
 
 See [sound-design contract](docs/sound-design.md) and the [reuse-first research protocol](docs/research-and-reuse.md).
 
+## Multi-shot silent visual assembly (first integration step)
+
+For an episode with separate rendered scenes, `pnpm shots:assemble <private-project> <storyboard.json> <shot-files.json> <silent-visual.mp4>` now validates the ordered beat-to-clip mapping and concatenates **already rendered** silent, normalized H.264 shots with FFmpeg stream copy. It verifies frame counts, formats and durations. The output goes through the existing `audio:mix` / `video:assemble` final handoff. This does **not** automatically render/cache individual shots or replace editorial cutting. See [shot assembly](docs/shot-assembly.md) and [#50](https://github.com/yesvus/sahne/issues/50).
+
 ## Assemble final H.264/AAC preview from visual + voice/SFX
 
 After **editing/approving the visual footage** and separately mixing the creator's actual voice with approved timed sound effects, Sahne can perform the final mux **without re-encoding the rendered graphics**:
