@@ -5,6 +5,10 @@
 
 **Implementation today:** a deterministic Remotion scene renderer. Treat that as a component, not the full product. Prefer invoking/adapting proven tools such as Avenox Skills and existing renderers over duplicating them. Do not introduce diffusion video generation, a custom editor, cloud infrastructure, or new orchestration services without an explicit product decision.
 
+## Web UI and upstream editor boundary
+
+**Decision [#72](https://github.com/yesvus/sahne/issues/72):** Creator/reviewer interface is a **web application**, not a native macOS app. Do not start or expand Swift/SwiftUI/AppKit development or macOS-specific packaging for Sahne. Do not rewrite a video editor, timeline engine or effects stack. Evaluate an actively maintained, license-compatible **upstream browser editor** (Clipkit/FableCut as first candidates) through a reproducible import-edit-export spike before selecting one. Keep the browser app a thin local-first shell for creator review, approvals, project status and an agent-to-timeline adapter; use existing React/shadcn/ui/Radix conventions rather than inventing components. Existing native experiments, if any, are non-shipping reference material: recover portable project/media contracts and QA findings only. Keep private media and review artifacts out of this public repo. Do not block the first complete 3-minute YouTube episode on the web app.
+
 ## Product workflow constraints
 
 **Primary release objective:** complete human-reviewed, YouTube-watch-ready 3-minute episodes before prioritizing 10-minute throughput. Read the [production readiness roadmap](docs/product-readiness-roadmap.md) and [creative QA playbook](docs/creative-qa-playbook.md) before accepting long-form video or authoring features. A render test passing is not a published-quality video. When a non-coding creative reviewer reports a problem, respond with **the exact video timestamp, changed shot, new private preview and before/after visual result** rather than a code-oriented explanation. Respect the human final approval gate and do not leak private previews.
