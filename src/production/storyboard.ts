@@ -153,24 +153,11 @@ export const storyboardSchema = z.object({
 
 export type Storyboard = z.infer<typeof storyboardSchema>;
 
-export const validateNarratedStoryboard = (
+export const validateStoryboardAssets = (
   storyboardInput: unknown,
-  avenoxTranscriptInput: unknown,
   assets: readonly AssetRecord[],
-) => {
+): Storyboard => {
   const storyboard = storyboardSchema.parse(storyboardInput);
-  if (!storyboard.narration) {
-    throw new Error('Storyboard has no narration; validate SFX-only assets without an ASR transcript');
-  }
-  const transcript = normalizeAvenoxTranscript(avenoxTranscriptInput);
-  const lastSpokenEnd = Math.max(...transcript.segments.map((segment) => segment.endMs));
-  if (lastSpokenEnd > storyboard.durationMs) {
-    throw new Error(
-      'Spoken transcript ends at ' + lastSpokenEnd +
-      'ms, after storyboard duration ' + storyboard.durationMs + 'ms',
-    );
-  }
-
   const byId = new Map(assets.map((asset) => [asset.id, asset]));
   for (const cue of storyboard.soundCues ?? []) {
     const asset = byId.get(cue.assetId);
@@ -185,6 +172,37 @@ export const validateNarratedStoryboard = (
     }
   }
   for (const beat of storyboard.beats) {
+    if (beat.source.kind !== 'asset') continue;
+    const asset = byId.get(beat.source.assetId);
+    if (!asset) {
+      throw new Error('Storyboard beat "' + beat.id + '" references missing asset ' + beat.source.assetId);
+    }
+    if (asset.reviewStatus !== 'approved' || asset.rights.clearance !== 'cleared') {
+      throw new Error('Storyboard beat "' + beat.id + '" references unapproved/uncleared asset ' + beat.source.assetId);
+    }
+  }
+  return storyboard;
+};
+
+export const validateNarratedStoryboard = (
+  storyboardInput: unknown,
+  avenoxTranscriptInput: unknown,
+  assets: readonly AssetRecord[],
+) => {
+  const storyboard = validateStoryboardAssets(storyboardInput, assets);
+  if (!storyboard.narration) {
+    throw new Error('Storyboard has no narration; validate SFX-only assets without an ASR transcript');
+  }
+  const transcript = normalizeAvenoxTranscript(avenoxTranscriptInput);
+  const lastSpokenEnd = Math.max(...transcript.segments.map((segment) => segment.endMs));
+  if (lastSpokenEnd > storyboard.durationMs) {
+    throw new Error(
+      'Spoken transcript ends at ' + lastSpokenEnd +
+      'ms, after storyboard duration ' + storyboard.durationMs + 'ms',
+    );
+  }
+
+  for (const beat of storyboard.beats) {
     const segment = beat.cueSegmentIndex === undefined
       ? undefined : transcript.segments[beat.cueSegmentIndex];
     if (!segment) {
@@ -198,20 +216,6 @@ export const validateNarratedStoryboard = (
         'Storyboard beat "' + beat.id +
         '" does not overlap its referenced narration segment ' +
         beat.cueSegmentIndex,
-      );
-    }
-    if (beat.source.kind !== 'asset') continue;
-    const asset = byId.get(beat.source.assetId);
-    if (!asset) {
-      throw new Error(
-        'Storyboard beat "' + beat.id + '" references missing asset ' +
-        beat.source.assetId,
-      );
-    }
-    if (asset.reviewStatus !== 'approved' || asset.rights.clearance !== 'cleared') {
-      throw new Error(
-        'Storyboard beat "' + beat.id + '" references unapproved/uncleared asset ' +
-        beat.source.assetId,
       );
     }
   }
