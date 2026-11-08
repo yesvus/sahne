@@ -26,7 +26,7 @@ Never schedule visual cues using unverified pre-recording script timestamps. Cor
 
 ## Channel identity and template consistency
 
-Before adding a new graphic or template, read `docs/channel-style-and-templates.md`. **Channel is the stable creative identity; video projects pin a channel style revision and template versions; assets are reviewed outputs/sources.** Do not let a downloaded template override a channel's palette/typefaces or change recurring character identities. Keep character reference sheets and unpublished channel/video metadata private.
+Before adding a new graphic or template, read `docs/channel-style-and-templates.md`. **Channel is the stable creative identity; video projects pin a channel style revision and template versions; assets are reviewed outputs/sources.** Montserrat is the current default, **not a fixed dependency**; use the channel's overridable font tokens and verify Turkish glyphs. Do not let a downloaded template override a channel's palette/typefaces or change recurring character identities. Keep character reference sheets and unpublished channel/video metadata private.
 
 For visual direction, prefer one dominant concept per shot, large typography, ample empty space and meaningful animation. Avoid faux-website dashboard cards, permanent UI chrome, dense captions, small technical labels and decorative progress bars in explanatory B-roll. The macOS window template is appropriate **only when actual software/UI is being explained**.
 
