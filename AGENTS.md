@@ -7,7 +7,7 @@
 
 ## Product workflow constraints
 
-- Use approved scripts for editorial intent, but align visuals to the **actual recorded audio** and corrected transcript timestamps.
+- **SFX-only:** never invent a voice file, transcript or mandatory spoken script. Align visual events and approved SFX against the motion timeline. **Narrated:** align visuals to the actual provided/recorded audio and corrected transcript timestamps.
 - Search/inspect approved cataloged assets before generating new B-roll or motion graphics. Track provenance, rights, stable asset IDs and editable source.
 - Human gates: script approval and final video QA/publishing; do not auto-publish.
 - `yesvus/sahne` is public: **never commit unpublished scripts, recordings, Drive file IDs, private storyboards, credentials or binary video archives**.
