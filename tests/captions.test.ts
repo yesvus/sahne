@@ -68,7 +68,7 @@ test('wraps long natural text without inventing timestamps or injecting markup',
     text: 'Example',
     segments: [{
       start: 1, end: 8,
-      text: 'This is a slightly longer piece of text that must wrap clearly into two readable lines.',
+      text: 'This is a slightly longer piece of text that wraps into two readable lines.',
     }],
   });
   const lines = result.srt.split('\n');
