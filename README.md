@@ -83,6 +83,20 @@ pnpm video:assemble private-project/storyboard.json \
 
 The visual must be silent H.264 and both media durations must agree with the language-specific storyboard. This does **not** generate visuals, recognize speech, align captions or approve the creative edit. The automated TR/EN smoke tests use **synthetic tones**, not real narration. See [final video assembly](docs/video-assembly.md).
 
+## Speech-free TR/EN animations (Montserrat + sound effects)
+
+**No narration is required for the motion graphics examples.** Current channel font preference is **Montserrat**, set in the versioned channel style and overridable per channel. The same HyperFrames HTTP scene accepts Turkish or English text through its existing render variables.
+
+```bash
+pnpm storyboard:validate - \
+  examples/production/storyboard.sfx-only-tr.sample.json \
+  examples/production/sound-catalog
+```
+
+This validates the **SFX-only** storyboard without inventing a speech transcript. A real locally approved WAV SFX file is needed for actual audio mixing; our CI generates original synthetic test clicks and renders both language editions to reviewable MP4s.
+
+See [speech-free/localized workflow and optional voice inputs](docs/audio-modes-localization.md).
+
 ## Quick start
 
 Requirements: Node.js 22+, pnpm 10+, and a machine able to run Chromium (Remotion installs/uses a supported browser).
