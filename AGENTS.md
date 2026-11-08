@@ -9,7 +9,7 @@
 
 - **SFX-only:** never invent a voice file, transcript or mandatory spoken script. Align visual events and approved SFX against the motion timeline. **Narrated:** align visuals to the actual provided/recorded audio and corrected transcript timestamps.
 - Search/inspect approved cataloged assets before generating new B-roll or motion graphics. Track provenance, rights, stable asset IDs and editable source.
-- Human gates: script approval and final video QA/publishing; do not auto-publish.
+- Human gates: approve a narration script **only if speech is actually used**, and always review final video QA/publishing; do not auto-publish.
 - `yesvus/sahne` is public: **never commit unpublished scripts, recordings, Drive file IDs, private storyboards, credentials or binary video archives**.
 - Tool/provider agnostic and local-first. Do not make Remotion vs HyperFrames migration decisions without a sample-based evaluation.
 - Treat `docs/vision.md` as the product direction and `docs/architecture.md` as the current renderer implementation. Re-triage legacy issues under [#1](https://github.com/yesvus/sahne/issues/1) against [#20](https://github.com/yesvus/sahne/issues/20).
