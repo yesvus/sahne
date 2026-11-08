@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "shots": [
+    {"beatId": "intro", "visualPath": "rendered/intro.mp4"},
+    {"beatId": "request-journey", "visualPath": "rendered/request-journey.mp4"},
+    {"beatId": "response", "visualPath": "rendered/response.mp4"}
+  ]
+}
