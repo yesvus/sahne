@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {mkdir, realpath, stat} from 'node:fs/promises';
+import {lstat, mkdir, realpath, stat} from 'node:fs/promises';
 import {dirname, extname, isAbsolute, relative, resolve} from 'node:path';
 import type {AssetRecord} from '../assets/catalog';
 import type {Storyboard} from './storyboard';
@@ -139,6 +139,17 @@ export const mixNarrationWithEffects = async ({
   }
   if ([voice, ...sources].includes(dest)) {
     throw new Error('Refusing to overwrite an input narration/SFX file');
+  }
+
+  // FFmpeg's -n is not a reliable failure signal when the output already exists.
+  // Reject existing files/symlinks explicitly, before starting a new render.
+  try {
+    await lstat(dest);
+    throw new Error('Refusing to overwrite existing audio master: ' + dest);
+  } catch (error) {
+    if (!(error instanceof Error && 'code' in error && error.code === 'ENOENT')) {
+      throw error;
+    }
   }
 
   await mkdir(dirname(dest), {recursive: true});
