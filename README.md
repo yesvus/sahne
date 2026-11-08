@@ -11,7 +11,7 @@
 - [GitHub vs Drive / asset catalog](docs/storage-and-assets.md)
 - [Current renderer architecture](docs/architecture.md)
 
-**Creator flow:** brainstorm in ChatGPT → approve a script → record real voice → align the audio transcript → storyboard → reuse or generate visuals → render → QA → archive reusable assets. Keep unpublished scripts and media in a private production workspace, not this public repository.
+**Creator flow:** choose a topic → plan visual beats → reuse templates/assets → render localized motion → add SFX → QA. **When narration is wanted**, optionally approve a script, import or record voice, align the actual transcript and mix it with the visuals. No voice is required for SFX-only clips. Keep unpublished scripts and media in a private production workspace, not this public repository.
 
 ## Asset catalog (first implemented production component)
 
