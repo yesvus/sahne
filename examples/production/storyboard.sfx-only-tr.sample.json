@@ -44,7 +44,7 @@
       "assetId": "synthetic-click-v1",
       "atMs": 1480,
       "durationMs": 200,
-      "gainDb": -22,
+      "gainDb": -6,
       "visualBeatId": "intro"
     },
     {
@@ -52,7 +52,7 @@
       "assetId": "synthetic-click-v1",
       "atMs": 5010,
       "durationMs": 200,
-      "gainDb": -24,
+      "gainDb": -8,
       "visualBeatId": "request-journey"
     },
     {
@@ -60,7 +60,7 @@
       "assetId": "synthetic-click-v1",
       "atMs": 7510,
       "durationMs": 200,
-      "gainDb": -26,
+      "gainDb": -10,
       "visualBeatId": "request-journey"
     },
     {
@@ -68,7 +68,7 @@
       "assetId": "synthetic-click-v1",
       "atMs": 11520,
       "durationMs": 200,
-      "gainDb": -23,
+      "gainDb": -7,
       "visualBeatId": "response"
     }
   ]
