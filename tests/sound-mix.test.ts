@@ -47,14 +47,23 @@ test('FFmpeg mixes timed, rights-approved SFX with separate Turkish and English 
     ]) {
       const projectDir = join(root, entry.language);
       await mkdir(join(projectDir, 'audio'), {recursive: true});
-      const input = join(projectDir, 'audio', 'narration.wav');
-      makeWav(input, entry.language === 'tr' ? 220 : 330, entry.durationMs / 1000);
+      const inputWav = join(projectDir, 'audio', 'narration.wav');
+      makeWav(inputWav, entry.language === 'tr' ? 220 : 330, entry.durationMs / 1000);
+      // Matroska/FLAC commonly reports stream.duration as N/A while
+      // format.duration remains valid. Verify that probeAudio falls back.
+      const voiceFilename = entry.language === 'tr' ? 'narration.mka' : 'narration.wav';
+      if (entry.language === 'tr') {
+        execute('ffmpeg', [
+          '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+          '-i', inputWav, '-c:a', 'flac', join(projectDir, 'audio', voiceFilename),
+        ]);
+      }
 
       const storyboard = {
         schemaVersion: 1,
         narration: {
           language: entry.language,
-          voicePath: 'audio/narration.wav',
+          voicePath: 'audio/' + voiceFilename,
           approvedScriptPath: 'script.md',
           transcriptPath: 'transcript.json',
         },
