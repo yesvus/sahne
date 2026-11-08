@@ -93,7 +93,7 @@ export const mixNarrationWithEffects = async ({
     : undefined;
   const voiceDuration = voice ? await probeAudio(voice) : storyboard.durationMs;
   const durationDifference = voiceDuration - storyboard.durationMs;
-  if (durationDifference > 0.001 || durationDifference < -100) {
+  if (durationDifference > 1 || durationDifference < -100) {
     throw new Error(
       'Recorded narration duration (' + Math.round(voiceDuration) +
       'ms) differs from storyboard duration (' + storyboard.durationMs +

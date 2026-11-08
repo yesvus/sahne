@@ -53,10 +53,17 @@ test('FFmpeg mixes timed, rights-approved SFX with separate Turkish and English 
       // format.duration remains valid. Verify that probeAudio falls back.
       const voiceFilename = entry.language === 'tr' ? 'narration.mka' : 'narration.wav';
       if (entry.language === 'tr') {
+        const matroska = join(projectDir, 'audio', voiceFilename);
         execute('ffmpeg', [
           '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
-          '-i', inputWav, '-c:a', 'flac', join(projectDir, 'audio', voiceFilename),
+          '-i', inputWav, '-c:a', 'flac', matroska,
         ]);
+        const metadata = JSON.parse(execute('ffprobe', [
+          '-v', 'error', '-show_entries', 'stream=duration:format=duration',
+          '-of', 'json', matroska,
+        ])) as {streams?: Array<{duration?: string}>; format?: {duration?: string}};
+        assert.ok(!Number.isFinite(Number(metadata.streams?.[0]?.duration)));
+        assert.ok(Number(metadata.format?.duration) > 0);
       }
 
       const storyboard = {
