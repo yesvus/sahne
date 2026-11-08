@@ -1,7 +1,7 @@
 # Agent instructions — Sahne
 
 ## Mission
-**Product mission:** support a human creator making narration-first YouTube videos with an agent-operated script → voice recording → timed transcript → storyboard → asset reuse/creation → render → review workflow. The creator supplies and approves the script and their own voice. See [docs/vision.md](docs/vision.md), [docs/production-workflow.md](docs/production-workflow.md), [docs/storage-and-assets.md](docs/storage-and-assets.md), and [#20](https://github.com/yesvus/sahne/issues/20).
+**Product mission:** produce Turkish/English code-driven videos with reusable templates, branded typography and sound effects. **SFX-only videos have no spoken narration**. For optional narrated editions, accept either the creator's own recording or a licensed externally supplied audio file; only narrated videos require a corrected speech transcript. See [docs/vision.md](docs/vision.md), [docs/production-workflow.md](docs/production-workflow.md), [docs/storage-and-assets.md](docs/storage-and-assets.md), and [#20](https://github.com/yesvus/sahne/issues/20).
 
 **Implementation today:** a deterministic Remotion scene renderer. Treat that as a component, not the full product. Prefer invoking/adapting proven tools such as Avenox Skills and existing renderers over duplicating them. Do not introduce diffusion video generation, a custom editor, cloud infrastructure, or new orchestration services without an explicit product decision.
 
