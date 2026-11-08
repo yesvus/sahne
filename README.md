@@ -1,6 +1,6 @@
 # Sahne
 
-**An agent-operated, narration-first video production workflow.** Sahne aims to turn creator-approved scripts and human-recorded narration into timed, reviewable YouTube videos with reusable B-roll and editable motion graphics. Reuse existing tools and cataloged assets before writing new renderers.
+**Agent-operated, code-driven video production.** Sahne supports localized motion graphics with sound effects **without speech**, as well as optional narration using creator-recorded or externally supplied audio. Reuse existing tools and cataloged assets before writing new renderers.
 
 > **Project status:** the existing implementation is a small Remotion-based scene renderer, **not** a complete narration-to-video pipeline. Product direction is tracked in [#20](https://github.com/yesvus/sahne/issues/20).
 
