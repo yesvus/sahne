@@ -205,3 +205,42 @@ test('assembly rejects irregular presentation timestamps despite a nominal 30 fp
     await rm(root, {recursive: true, force: true});
   }
 });
+
+
+test('assembly rejects a single time-base tick offset on a 30fps frame grid', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'sahne-mux-pts-jitter-'));
+  try {
+    const video = join(root, 'visual.mp4');
+    run('ffmpeg', [
+      '-v', 'error', '-f', 'lavfi', '-i', 'color=s=160x90:r=30:d=1',
+      '-vf', "settb=expr=1/90000,setpts=N*3000+gte(N\\,1)",
+      '-fps_mode', 'passthrough', '-enc_time_base', '1:90000',
+      '-video_track_timescale', '90000', '-c:v', 'libx264', video,
+    ]);
+    const {streams, format} = inspect(video);
+    assert.equal(streams[0].r_frame_rate, '30/1');
+    const durationMs = Math.round(Number(format.duration) * 1000);
+    const audio = join(root, 'audio.wav');
+    makeTone(audio, durationMs / 1000, 220);
+    const storyboard = join(root, 'storyboard.json');
+    await writeFile(storyboard, JSON.stringify({
+      schemaVersion: 1,
+      narration: {voicePath: 'audio.wav', approvedScriptPath: 'script.md', transcriptPath: 'transcript.json'},
+      durationMs, fps: 30,
+      beats: [{
+        id: 'opening', startMs: 0, endMs: durationMs, treatment: 'overlay',
+        cueText: 'Synthetic video with a one-tick PTS shift', cueSegmentIndex: 0,
+        source: {kind: 'generate', brief: 'Render a simple color animation for QA'},
+      }],
+    }));
+    const output = join(root, 'final.mp4');
+    const result = spawnSync(process.execPath, [
+      '--import', 'tsx', 'scripts/assemble-video.ts', storyboard, video, audio, output,
+    ], {encoding: 'utf8'});
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Visual must have constant frame timing/);
+    await assert.rejects(stat(output), {code: 'ENOENT'});
+  } finally {
+    await rm(root, {recursive: true, force: true});
+  }
+});

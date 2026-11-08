@@ -87,7 +87,14 @@ const assertConstantFrameTiming = async (file: string, stream: Stream, fps: numb
   let first = Infinity;
   let last = -Infinity;
   let invalid = false;
-  const tolerance = Number.isInteger(ticksPerFrame) ? 0 : 1.000001;
+  // A mathematically integral period (e.g. 3000 ticks at 30fps on a
+  // 90kHz clock) can be represented as 2999.9999999999995 by JS floats.
+  // Snap near-integer periods to their exact grid before checking PTS.
+  const roundedTicks = Math.round(ticksPerFrame);
+  const integralTicks = Math.abs(ticksPerFrame - roundedTicks) <=
+    4 * Number.EPSILON * Math.max(1, Math.abs(ticksPerFrame));
+  const gridTicksPerFrame = integralTicks ? roundedTicks : ticksPerFrame;
+  const tolerance = integralTicks ? 0 : 1.000001;
   const positions = new Set<number>();
   await command('ffprobe', [
     '-v', 'error', '-select_streams', 'v:0',
@@ -102,9 +109,9 @@ const assertConstantFrameTiming = async (file: string, stream: Stream, fps: numb
     }
     origin ??= pts;
     const offset = pts - origin;
-    const position = Math.round(offset / ticksPerFrame);
-    // Allow one timestamp tick for rounding at the origin and at this packet.
-    if (Math.abs(offset - position * ticksPerFrame) > tolerance || positions.has(position)) {
+    const position = Math.round(offset / gridTicksPerFrame);
+    // Non-integral periods may need tick rounding; integral periods do not.
+    if (Math.abs(offset - position * gridTicksPerFrame) > tolerance || positions.has(position)) {
       invalid = true;
       return;
     }
