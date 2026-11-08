@@ -38,7 +38,7 @@ Use upstream HyperFrames composition variables instead of a custom parameterized
 
 **Bilingual production:** Turkish (`tr`) and English (`en`) share the same reusable graphics and channel identity. **On-screen copy can change without any speech.** Voice/audio/transcripts only exist for narrated editions (creator-recorded or imported); timings of narrated editions remain independent.
 
-**Sound design:** `docs/sound-design.md` describes rights-checked optional SFX cues and `pnpm audio:mix`. Use the existing asset catalog (`category: audio`), **only approved/cleared** sounds, and native FFmpeg filtergraphs. Keep spoken narration authoritative; effects quiet, sparse and tied to meaningful animation events. Real voice/audio binaries and Drive IDs must not be committed to public GitHub. Automated sine-wave audio tests do not prove human speech clarity or licensing.
+**Sound design:** `docs/sound-design.md` describes rights-checked SFX cues and `pnpm audio:mix`. Use the existing asset catalog (`category: audio`), **only approved/cleared** sounds, and native FFmpeg filtergraphs. For SFX-only clips no voice or transcript is necessary; for narrated clips the supplied voice is authoritative. Effects remain sparse, subtle and tied to animation events. Real voice/audio binaries and Drive IDs must not be committed to public GitHub. Automated sine-wave audio tests do not prove human speech clarity or licensing.
 
 ## Final audio+video handoff (no new editor)
 
