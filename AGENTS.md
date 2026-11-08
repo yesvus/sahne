@@ -36,7 +36,7 @@ Use upstream HyperFrames composition variables instead of a custom parameterized
 
 **Before implementing any feature**, consult `docs/research-and-reuse.md` and assess existing maintained solutions (Avenox Skills, HyperFrames, FFmpeg, video-alchemy, other relevant upstream projects) plus their **licenses and actual capabilities**. Prefer a small wrapper/contribution over rebuilding video/audio infrastructure. A weekly research radar exists to catch changes; do not automatically file issues for headlines.
 
-**Bilingual production:** Turkish (`tr`) and English (`en`) editions share channel identity/templates but use separately approved scripts, original recordings, transcripts, storyboard timings, sound cues and exports. Never copy a language's cue timecodes to its translation.
+**Bilingual production:** Turkish (`tr`) and English (`en`) share the same reusable graphics and channel identity. **On-screen copy can change without any speech.** Voice/audio/transcripts only exist for narrated editions (creator-recorded or imported); timings of narrated editions remain independent.
 
 **Sound design:** `docs/sound-design.md` describes rights-checked optional SFX cues and `pnpm audio:mix`. Use the existing asset catalog (`category: audio`), **only approved/cleared** sounds, and native FFmpeg filtergraphs. Keep spoken narration authoritative; effects quiet, sparse and tied to meaningful animation events. Real voice/audio binaries and Drive IDs must not be committed to public GitHub. Automated sine-wave audio tests do not prove human speech clarity or licensing.
 
