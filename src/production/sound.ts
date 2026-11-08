@@ -143,7 +143,7 @@ export const mixNarrationWithEffects = async ({
 
   await mkdir(dirname(dest), {recursive: true});
   await run('ffmpeg', [
-    '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+    '-hide_banner', '-loglevel', 'error', '-nostdin', '-n',
     '-i', voice,
     ...sources.flatMap((source) => ['-i', source]),
     '-filter_complex', filters.join(';'),
